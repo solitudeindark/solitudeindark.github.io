@@ -152,75 +152,28 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-2018101501" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-2018101601" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/15/2018101501/">从任务安排初步接触斜率优化</a>
+      <a class="article-title" href="/2018/10/16/2018101601/">Ubuntu实用网址</a>
     </h1>
   
 
         
-        <a href="/2018/10/15/2018101501/" class="archive-article-date">
-  	<time datetime="2018-10-15T02:51:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-15</time>
+        <a href="/2018/10/16/2018101601/" class="archive-article-date">
+  	<time datetime="2018-10-15T19:48:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-16</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-      	  <p><a href="https://www.luogu.org/problemnew/show/P2365" target="_blank" rel="noopener">传送门</a>  </p>
-<p>O(N^2)的方法非常简单，这里不再细讲。f[i]表示前i个任务分成若</p>
-<p>干批执行的最小费用，sumC,sumT是费用系数和时间的前缀和。</p>
-<p>可得状态转移方程</p>
-<p>f[i]=min(f[j]+sumC[i]*sumT[i]+s*sumC[n]-sumC[j]*(sumT[i]+s)); </p>
-<p>过掉这道题已是轻轻松松。<br>附上代码:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 5005</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> oo 1000000000</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> sumc[N],sumt[N];</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> f[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n,s,t,c;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;t,&amp;c);</span><br><span class="line">        sumt[i]=sumt[i<span class="number">-1</span>]+t;</span><br><span class="line">        sumc[i]=sumc[i<span class="number">-1</span>]+c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        f[i]=oo;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;=i<span class="number">-1</span>;++j)</span><br><span class="line">        f[i]=min(f[i],f[j]+sumc[i]*sumt[i]+s*sumc[n]-sumc[j]*(sumt[i]+s));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d"</span>,f[n]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<p><a href="https://loj.ac/problem/10185" target="_blank" rel="noopener">传送门</a></p>
-<p>下面就来看一看如何进一步优化。 </p>
-<p>我们会发现后面的状态肯定是由前面的最优状态转移而来的，显</p>
-<p>然可以想到单调队列优化。但和平常的单调队列优化不同的是，</p>
-<p>f[i]的转移中除了f[j],还有其他的关于j的式子(例如sumc[j]),这时候</p>
-<p>就要用到单调队列的斜率优化。</p>
-<p>在原状态转移方程中，我们把只跟j有关的分成一类，把既跟i有</p>
-<p>关，又跟j有关的分成一类，把跟j无关的分成一类。化简后可得</p>
-<p>下式:  </p>
-<p>f[i]=f[j]-(sumT[i]+s)*sumC[j]+(sumC[i]*sumT[i]+s*sumC[n]);</p>
-<p>设y=f[j], k=sumT[i]+s, x=sumC[j],   C=sumC[i]*sumT[i]+s*sumC[n]  </p>
-<p>那么原式可化为f[i]=y-kx+C  </p>
-<p>最终可得y=kx+f[i]-C  </p>
-<p>当我们枚举i的时候,k和C是常数  </p>
-<p>那么上式是不是很像y关于x的一次函数呢      </p>
-<p>当k一定时，要使f[i]最小，即截距最小，那么何时取到这个最小值呢。</p>
-<p>我们将直线y=kx+b(Ps:b为未知数)从下往上平移，当该直线第</p>
-<p>一次碰到某点(x(w),y(w))时，该点即为最优状态(1&lt;=w&lt;=i-1)</p>
-<p>即K(w-1,w)&lt;K(w,w+1)(K(x,y)表示直线xy的斜率)</p>
-<p>如图</p>
-<p><img src="https://cdn.luogu.org/upload/pic/25314.png" alt=""><br>​<br>​        同理可知，若K(w-1,w)&gt;K(w,w+1),w一定不可能成为最优状态，如图<br><img src="https://cdn.luogu.org/upload/pic/25315.png" alt=""><br>又因为x单调递增，所以w也不可能在今后成为最优状态，直接舍去。这样是不是就做到了优化呢。</p>
-<p>回到代码实现，因为x和k单调递增，所以我们可以用一个单调队列来维护这个“下凸壳”</p>
-<p>1、维护K(j,i)(0&lt;=j&lt;i)的单调递增（队尾维护）</p>
-<p>2、保证K(j,i)&gt;k,即可以取到这个最优状态（队首维护）</p>
-<p>此时，对于每个i，可以从队首的最优状态直接转移</p>
-<p>由于每个元素只进队列一次，只出队列一次，因而时间复杂度为O（N）</p>
-<p>到这里，这个所谓的斜率优化就结束了，附上代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXN 300005</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> oo 1000000000</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> sumT[MAXN],sumC[MAXN],que[MAXN];</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> f[MAXN];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cmp1</span><span class="params">(<span class="keyword">int</span> x1,<span class="keyword">int</span> x2,<span class="keyword">int</span> x3)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (f[x2]-f[x1])*(sumC[x3]-sumC[x2])&gt;=(f[x3]-f[x2])*(sumC[x2]-sumC[x1]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cmp2</span><span class="params">(<span class="keyword">int</span> x1,<span class="keyword">int</span> x2,<span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> f[x2]-f[x1]&lt;=k*(sumC[x2]-sumC[x1]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n,s,t,c;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;t,&amp;c);</span><br><span class="line">        sumT[i]=sumT[i<span class="number">-1</span>]+t;</span><br><span class="line">        sumC[i]=sumC[i<span class="number">-1</span>]+c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memset</span>(f,<span class="number">0x3f</span>,<span class="keyword">sizeof</span>(f));</span><br><span class="line">    f[<span class="number">0</span>]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> head=<span class="number">1</span>,tail=<span class="number">1</span>;</span><br><span class="line">    que[<span class="number">1</span>]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)&#123;</span><br><span class="line">        <span class="keyword">while</span> ( (head&lt;tail) &amp;&amp; (cmp2(que[head],que[head+<span class="number">1</span>],sumT[i]+s)) ) ++head;</span><br><span class="line">        f[i]=f[que[head]]+(<span class="keyword">long</span> <span class="keyword">long</span>)sumC[i]*sumT[i]+s*sumC[n]-sumC[que[head]]*(sumT[i]+s);</span><br><span class="line">        <span class="keyword">while</span> ( (head&lt;tail) &amp;&amp; (cmp1(que[tail<span class="number">-1</span>],que[tail],i)) ) --tail;</span><br><span class="line">        que[++tail]=i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%lld"</span>,f[n]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<p><a href="https://loj.ac/problem/10186" target="_blank" rel="noopener">传送门</a></p>
-<p>问题又来了，如果k不是单调递增呢，又该如何做呢？</p>
-<p>很显然，我们必须保留完整的“下凸壳”</p>
-<p>那么答案就必须用二分来求</p>
-<p>附上代码:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ll long long</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXN 300005</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> sumT[MAXN],sumC[MAXN],que[MAXN];</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> f[MAXN];</span><br><span class="line"><span class="keyword">int</span> n,s,t,c;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cmp1</span><span class="params">(<span class="keyword">int</span> x1,<span class="keyword">int</span> x2,<span class="keyword">int</span> x3)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (ll)(f[x2]-f[x1])*(sumC[x3]-sumC[x2])&gt;=(ll)(f[x3]-f[x2])*(sumC[x2]-sumC[x1]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cmp2</span><span class="params">(<span class="keyword">int</span> x1,<span class="keyword">int</span> x2,<span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> f[x2]-f[x1]&lt;=(ll)k*(sumC[x2]-sumC[x1]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (l&lt;r)&#123;</span><br><span class="line">        <span class="keyword">if</span> (l==r) <span class="keyword">return</span> que[l];</span><br><span class="line">        <span class="keyword">int</span> mid=(l+r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (cmp2(que[mid],que[mid+<span class="number">1</span>],sumT[x]+s)) l=mid+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> r=mid;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> que[l];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;t,&amp;c);</span><br><span class="line">        sumT[i]=sumT[i<span class="number">-1</span>]+t;</span><br><span class="line">        sumC[i]=sumC[i<span class="number">-1</span>]+c;</span><br><span class="line">    &#125;</span><br><span class="line">    f[<span class="number">0</span>]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> head=<span class="number">1</span>,tail=<span class="number">1</span>;</span><br><span class="line">    que[<span class="number">1</span>]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)&#123;</span><br><span class="line">        <span class="keyword">int</span> p=find(head,tail,i);</span><br><span class="line">        f[i]=f[p]+(ll)sumC[i]*sumT[i]+(ll)s*sumC[n]-(ll)sumC[p]*(sumT[i]+s);</span><br><span class="line">        <span class="keyword">while</span> ( (head&lt;tail) &amp;&amp; (cmp1(que[tail<span class="number">-1</span>],que[tail],i)) ) --tail;</span><br><span class="line">        que[++tail]=i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%lld"</span>,f[n]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>那如果连x也不单调递增呢？</p>
-<p>这就必须用到splay来维护了</p>
-<p>有兴趣的同学可以了解一下<a href="https://www.luogu.org/problemnew/show/P4027" target="_blank" rel="noopener">NOI2007货币兑换</a> 这里不再细讲</p>
-<hr>
-<p>这里有一个小细节需要注意，在计算斜率的时候，最好用交叉相</p>
-<p>乘的方法，不然可能会出现一些精度误差，相乘的结果是否要用</p>
-<p>(long long)最好也关注下</p>
+      	  <p><a href="https://ywnz.com/linuxjc/2553.html" target="_blank" rel="noopener"><strong>wine安装</strong></a></p>
+<p><a href="http://tieba.baidu.com/p/5575480272?pid=118474764350&amp;cid=0#118474764350" target="_blank" rel="noopener"><strong>qq打包</strong></a></p>
 
       
 
@@ -234,7 +187,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">DP</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">ubuntu</a>
         		</li>
       		
 		</ul>
@@ -244,7 +197,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/15/2018101501/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/10/16/2018101601/">展开全文 >></a>
         </p>
       
 
@@ -276,7 +229,7 @@
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -372,6 +325,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
               </li>
             
             <div class="clearfix"></div>
